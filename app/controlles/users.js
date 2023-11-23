@@ -32,7 +32,7 @@ const createUser = async (req, res) => {
         const userExistente = await userModel.findOne({ name: name });
 
         if (userExistente) {
-            return res.status(400).json({ message: 'Ya existe un usuario con ese name, intente con un name original.' });
+            return res.status(400).json({ message: 'Ya existe un usuario con ese name, intente con un nombre  original.' });
         }
 
         // Crear un nuevo usuario
@@ -123,16 +123,19 @@ const updateUserByName = async (req, res) => {
     }
 }
 
-// Eliminar usuario por name
+
+// Eliminar usuario por nombre
 const deleteUserByName = async (req, res) => {
     try {
         const userName = req.params.name;
-        const deleteduser = await userModel.findOneAndRemove({ name: userName });
-        if (deleteduser) {
-            res.status(204).json({ message: 'Usuario eliminado con éxito.', data: deleteduser });
+        const deletedUser = await userModel.findOneAndDelete({ name: userName });
+
+        if (deletedUser) {
+            res.status(200).json({ message: 'Usuario eliminado con éxito.', data: deletedUser });
         } else {
             res.status(404).json({ message: 'Usuario no encontrado.' });
         }
+
     } catch (error) {
         httpError(res, error);
     }
@@ -205,8 +208,6 @@ const getUserByAssignedTo = async (req, res) => {
         httpError(res, error);
     }
 }
-
-
 
 
 // Exportar funciones

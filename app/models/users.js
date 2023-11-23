@@ -17,9 +17,13 @@ const UserSchema = new mongoose.Schema(
         password:{
             type:String
         },
-        assignedTo:{
-            type:String
-        }
+        assignedTo: {
+            type: [
+                {
+                    type: String,
+                }
+            ],
+        },
     }, 
     {
         timestamps: true,

@@ -36,7 +36,12 @@
                             type: Number,
                         },
                         imageUrl: {
-                            type: String,
+                            data: {
+                                type: Buffer
+                            },
+                            contentType: {
+                                type: String
+                            },
                         },
                     },
                 ],
