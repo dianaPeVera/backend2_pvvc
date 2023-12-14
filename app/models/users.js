@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema(
     {
         id:{
-            type:Number
+            type:String
         },
         name:{
             type:String

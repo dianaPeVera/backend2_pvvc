@@ -1,40 +1,25 @@
-require('dotenv').config()
-const epxress = require('express')
-const cors = require('cors')
-const app = epxress()
-const { dbConnect } = require('./config/mongo')
+require('dotenv').config();
+const epxress = require('express');
+const cors = require('cors');
+const { dbConnect } = require('./config/mongo');
 
-const PORT = process.env.PORT || 5038
-//app.use(cors())
-app.use(epxress.json())
-
-
-app.use(cors({ origin: 'http://localhost:3000' }));
-
-/*
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-});
-*/
+const app = epxress();
+const PORT = process.env.PORT || 5038;
 
 // Configura el middleware para manejar CORS
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', process.env.URL);
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    next();
-});
-  
-  
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
-app.use('/api/1.0', require('./app/routes'))
+// Aumenta el límite de tamaño de carga útil
+app.use(epxress.json({ limit: '10mb' }));
+app.use(epxress.urlencoded({ extended: true, limit: '10mb' }));
 
-dbConnect()
+// Rutas
+app.use('/api/1.0', require('./app/routes'));
+
+// Conexión a la base de datos
+dbConnect();
+
+// Inicia el servidor
 app.listen(PORT, () => {
-    console.log('API lista por el puerto ', PORT)
-})
+    console.log('API lista por el puerto ', PORT);
+});

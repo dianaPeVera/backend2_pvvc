@@ -24,7 +24,7 @@ const createUser = async (req, res) => {
         const { id, name, rol, email, password, assignedTo} = req.body;
 
         // Verificar si todos los parámetros requeridos están presentes
-        if (!name || !rol || !email || !password) {
+        if (!id || !name || !rol || !email || !password) {
             return res.status(400).json({ message: 'Todos los campos son obligatorios. Asegúrese de proporcionar name, rol, email y password.' });
         }
 
@@ -85,6 +85,31 @@ const authenticateUser = async (req, res) => {
     }
 };
 
+
+// Generador de ID alfanumerica
+const generateIdUser = async (req, res) => {
+    try {
+        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let centinel = true;
+        let clave = '';
+
+        while(centinel){
+            clave = '';
+            for (let i = 0; i < 10; i++) {
+                const indice = Math.floor(Math.random() * caracteres.length);
+                clave += caracteres.charAt(indice);
+            }
+            const available = await userModel.findOne( {id: clave} ); 
+            
+            if(!available){
+                centinel = false;
+            }
+        }
+        res.status(200).json({ message: 'Gneracion de ID para users exitoso', data: clave });
+    } catch (error) {
+        httpError(res, error); // Utiliza la función httpError para manejar el error
+    }
+}
 
 /********** CRUD POR PROPIEDAD DE NAME **********/
 
@@ -211,4 +236,4 @@ const getUserByAssignedTo = async (req, res) => {
 
 
 // Exportar funciones
-module.exports = { getUsers, createUser, authenticateUser, getUserByName, updateUserByName, deleteUserByName, getUserById, updateUserById, deleteUserById, getUserByAssignedTo };
+module.exports = { getUsers, generateIdUser, createUser, authenticateUser, getUserByName, updateUserByName, deleteUserByName, getUserById, updateUserById, deleteUserById, getUserByAssignedTo, getUserById};
