@@ -12,49 +12,6 @@ const getTools = async (req, res) => {
     }
 }
 
-/*
-const createTool = async (req, res) => {
-  try {
-    const { nombre, acronimo, categoria, items } = req.body;
-
-    console.log(req.body)
-    // Verificar si ya existe una herramienta con el mismo nombre o acrónimo
-    const toolExistente = await toolModel.findOne({
-      $or: [
-        { nombre: nombre },
-        { acronimo: acronimo }
-      ]
-    });
-
-    if (toolExistente) {
-      return res.status(409).json({ message: 'Ya existe una herramienta con el mismo nombre o acrónimo.' });
-    } else {
-      // Si no existe, crea una nueva herramienta
-      const nuevaTool = new toolModel({ nombre, acronimo, categoria });
-
-      // Modifica cada item para manejar la propiedad imageUrl
-      nuevaTool.items = items.map(item => {
-        return {
-          ...item,
-          imageUrl: {
-            data: item.imageUrl.data.split(',')[1], // Obtén solo el contenido base64
-            contentType: item.imageUrl.typeFile,
-          }
-        };
-      });
-
-      console.log(nuevaTool.items.data)
-
-      const toolGuardada = await nuevaTool.save();
-      res.status(201).json({ data: toolGuardada, message: 'Herramienta creada con éxito.' });
-    }
-  } catch (error) {
-    httpError(res, error);
-  }
-};
-
-*/
-
 const createTool = async (req, res) => {
   try {
     const { nombre, acronimo, categoria, items } = req.body;
@@ -94,8 +51,6 @@ const createTool = async (req, res) => {
     httpError(res, error);
   }
 };
-
-  
   
 
 /********** CRUD POR PROPIEDAD DE ID **********/
