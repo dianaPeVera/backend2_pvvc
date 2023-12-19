@@ -1,6 +1,6 @@
     const mongoose = require('mongoose');
 
-    const UserSchema = new mongoose.Schema(
+    const ToolSchema = new mongoose.Schema(
         {
             id: {
                 type: Number,
@@ -36,13 +36,13 @@
                             type: Number,
                         },
                         imageUrl: {
-                            data: {
-                                type: Buffer
-                            },
-                            contentType: {
-                                type: String
-                            },
+                        contentType: {
+                            type: String
                         },
+                        data: {
+                            type: Buffer
+                        }
+                    },
                     },
                 ],
             },
@@ -53,4 +53,4 @@
         }
     );
 
-    module.exports = mongoose.model('tools', UserSchema);
+    module.exports = mongoose.model('tools', ToolSchema);

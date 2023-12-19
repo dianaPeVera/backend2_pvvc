@@ -1,16 +1,38 @@
 const { httpError } = require('../helpers/handleError');
 const toolModel = require('../models/tools');
+const { Binary } = require('mongodb');
+
 
 /**********  FUNCIONES PRINCIPALES   **********/
-
 const getTools = async (req, res) => {
     try {
         const listAll = await toolModel.find({});
-        res.status(200).json({ data: listAll });
+
+        // Convert image data to Base64
+        const toolsWithBase64Images = listAll.map((tool) => {
+            if (tool.items) {
+                tool.items = tool.items.map((item) => {
+                    if (item.imageUrl && item.imageUrl.data) {
+                        // Convert Buffer to Base64
+                        const base64Image = item.imageUrl.data.toString('base64');
+                        // Update item.imageUrl.data to store the Base64-encoded data
+                        item.imageUrl.data = base64Image;
+                        // Remove the original Buffer field if you don't need it anymore
+                        delete item.imageUrl.contentType;
+                    }
+                    return item;
+                });
+            }
+            return tool;
+        });
+
+        res.status(200).json({ data: toolsWithBase64Images });
     } catch (error) {
         httpError(res, error);
     }
-}
+};
+
+
 
 /*
 const createTool = async (req, res) => {
@@ -58,7 +80,7 @@ const createTool = async (req, res) => {
 const createTool = async (req, res) => {
     try {
       const { nombre, acronimo, categoria, items } = req.body;
-  
+
       console.log(req.body)
       // Verificar si ya existe una herramienta con el mismo nombre o acrónimo
       const toolExistente = await toolModel.findOne({
@@ -67,13 +89,13 @@ const createTool = async (req, res) => {
           { acronimo: acronimo }
         ]
       });
-  
+
       if (toolExistente) {
         return res.status(409).json({ message: 'Ya existe una herramienta con el mismo nombre o acrónimo.' });
       } else {
         // Si no existe, crea una nueva herramienta
         const nuevaTool = await toolModel.create({ nombre, acronimo, categoria, items });
-        
+
         // Modifica cada item para manejar la propiedad imageUrl
         nuevaTool.items = items.map(item => {
           return {
@@ -84,9 +106,9 @@ const createTool = async (req, res) => {
             }
           };
         });
-  
+
         console.log(nuevaTool.items.data)
-  
+
         const toolGuardada = await nuevaTool.save();
         res.status(201).json({ data: toolGuardada, message: 'Herramienta creada con éxito.' });
       }
@@ -95,8 +117,8 @@ const createTool = async (req, res) => {
     }
   };
 
-  
-  
+
+
 
 /********** CRUD POR PROPIEDAD DE ID **********/
 
